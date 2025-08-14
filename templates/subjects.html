@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-book"></i> Subjects</h3>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Add Subject</h5>
+    <form method="post" action="{{ url_for('admin_subjects_add') }}" class="row g-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="col-md-6">
+        <label class="form-label">Name</label>
+        <input name="name" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Class</label>
+        <select name="class_id" class="form-select" required>
+          {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}{% if c.section %} - {{ c.section }}{% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr><th>ID</th><th>Name</th><th>Class</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for s in subjects %}
+          <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.classroom.name }}{% if s.classroom.section %} - {{ s.classroom.section }}{% endif %}</td>
+            <td class="text-end">
+              <form method="post" action="{{ url_for('admin_subjects_delete', subject_id=s.id) }}" onsubmit="return confirm('Delete subject?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-secondary">No subjects yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

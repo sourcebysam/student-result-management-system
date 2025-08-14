@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-users"></i> Students</h3>
+
+<form class="row g-3 align-items-end mb-4" method="get">
+  <div class="col-md-6">
+    <label class="form-label">Search</label>
+    <input name="q" value="{{ q or '' }}" class="form-control" placeholder="name or registration no">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Per Page</label>
+    <select class="form-select" name="pp">
+      {% for n in [5,10,20,50] %}
+        <option value="{{n}}" {% if pp==n %}selected{% endif %}>{{n}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <button class="btn btn-outline-primary w-100"><i class="fa-solid fa-magnifying-glass"></i> Apply</button>
+  </div>
+</form>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Add Student</h5>
+    <form method="post" action="{{ url_for('admin_students_add') }}" class="row g-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="col-md-3">
+        <label class="form-label">Reg. No</label>
+        <input name="reg_no" class="form-control" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Name</label>
+        <input name="name" class="form-control" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Email</label>
+        <input name="email" type="email" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Class</label>
+        <select name="class_id" class="form-select" required>
+          {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}{% if c.section %} - {{ c.section }}{% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Temp Password</label>
+        <input name="password" class="form-control" placeholder="e.g. Pass@123" required>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add</button>
+      </div>
+    </form>
+
+    <div class="mt-4 d-flex gap-2">
+      <a href="{{ url_for('admin_students_export') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-file-csv"></i> Export CSV</a>
+      <div class="dropdown">
+        <button class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-solid fa-file-arrow-up"></i> Import CSV</button>
+        <div class="dropdown-menu p-3" style="min-width: 320px;">
+          <form method="post" action="{{ url_for('admin_students_import') }}" enctype="multipart/form-data" class="d-grid gap-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="file" name="file" accept=".csv" class="form-control" required>
+            <button class="btn btn-dark"><i class="fa-solid fa-upload"></i> Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr><th>ID</th><th>Reg No</th><th>Name</th><th>Email</th><th>Class</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.reg_no }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.email or '-' }}</td>
+            <td>{{ s.classroom.name }}{% if s.classroom.section %} - {{ s.classroom.section }}{% endif %}</td>
+            <td class="text-end">
+              <form method="post" action="{{ url_for('admin_students_delete', student_id=s.id) }}" onsubmit="return confirm('Delete student?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-secondary">No students found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav>
+      <ul class="pagination justify-content-center">
+        {% if page>1 %}
+        <li class="page-item">
+          <a class="page-link" href="?q={{q}}&pp={{pp}}&page={{page-1}}">Prev</a>
+        </li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">Page {{ page }}</span></li>
+        {% if has_more %}
+        <li class="page-item">
+          <a class="page-link" href="?q={{q}}&pp={{pp}}&page={{page+1}}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}

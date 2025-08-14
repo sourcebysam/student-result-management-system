@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}My Results{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="fa-solid fa-table-list"></i> My Results</h3>
+  <a href="{{ url_for('student_marksheet') }}" class="btn btn-outline-primary no-print"><i class="fa-solid fa-print"></i> Print Mark Sheet</a>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-4"><strong>Name:</strong> {{ student.name }}</div>
+      <div class="col-md-4"><strong>Reg No:</strong> {{ student.reg_no }}</div>
+      <div class="col-md-4"><strong>Class:</strong> {{ student.classroom.name }}{% if student.classroom.section %} - {{ student.classroom.section }}{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    {% if results %}
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead class="table-light"><tr><th>Subject</th><th>Marks</th><th>Max</th></tr></thead>
+          <tbody>
+            {% for r in results %}
+              <tr><td>{{ r.subject.name }}</td><td>{{ r.marks }}</td><td>{{ r.max_marks }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-2">
+        <span class="me-3"><strong>Total:</strong> {{ totals[0] }} / {{ totals[1] }}</span>
+        <span class="me-3"><strong>%:</strong> {{ totals[2] }}</span>
+        <span><strong>Grade:</strong> <span class="badge text-bg-{{ 'success' if totals[3] in ['A+','A','B+','B'] else ('warning' if totals[3] in ['C','D'] else 'danger') }}">{{ totals[3] }}</span></span>
+      </div>
+    {% else %}
+      <p class="text-secondary">No results published yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

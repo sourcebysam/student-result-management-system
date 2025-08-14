@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Add / Update Results{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-clipboard-check"></i> Add / Update Results</h3>
+
+<!-- Choose class -->
+<form class="row g-3 mb-4" method="get" action="{{ url_for('admin_results_add') }}">
+  <div class="col-md-6">
+    <label class="form-label">Choose Class</label>
+    <select name="class_id" class="form-select" onchange="this.form.submit()">
+      <option value="">-- select --</option>
+      {% for c in classes %}
+        <option value="{{ c.id }}" {% if class_id and c.id == class_id %}selected{% endif %}>
+          {{ c.name }}{% if c.section %} - {{ c.section }}{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if class_id %}
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Save Result</h5>
+    <form method="post" class="row g-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="class_id" value="{{ class_id }}">
+      <div class="col-md-4">
+        <label class="form-label">Student</label>
+        <select name="student_id" class="form-select" required>
+          {% for s in students %}
+            <option value="{{ s.id }}">{{ s.reg_no }} - {{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Subject</label>
+        <select name="subject_id" class="form-select" required>
+          {% for sub in subjects %}
+            <option value="{{ sub.id }}">{{ sub.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Marks</label>
+        <input type="number" name="marks" min="0" class="form-control" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Max</label>
+        <input type="number" name="max_marks" min="1" value="100" class="form-control" required>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+    </form>
+
+    <div class="mt-4 d-flex gap-2">
+      <a href="{{ url_for('admin_results_export', class_id=class_id) }}" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-file-csv"></i> Export Results CSV
+      </a>
+
+      <div class="dropdown">
+        <button class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fa-solid fa-file-arrow-up"></i> Import Results CSV
+        </button>
+        <div class="dropdown-menu p-3" style="min-width: 340px;">
+          <form method="post" action="{{ url_for('admin_results_import', class_id=class_id) }}" enctype="multipart/form-data" class="d-grid gap-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="file" name="file" accept=".csv" class="form-control" required>
+            <button class="btn btn-dark"><i class="fa-solid fa-upload"></i> Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<p class="text-secondary">Select a class to begin.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Staff Users{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="fa-solid fa-id-badge"></i> Staff Users</h3>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">Add Staff</h5>
+    <form method="post" action="{{ url_for('admin_users_add') }}" class="row g-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="col-md-4">
+        <label class="form-label">Username</label>
+        <input name="username" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Password</label>
+        <input name="password" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Role</label>
+        <select name="role" class="form-select">
+          <option value="staff">staff</option>
+          <option value="admin">admin</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light"><tr><th>ID</th><th>Username</th><th>Role</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td><span class="badge text-bg-{{ 'danger' if u.role=='admin' else 'secondary' }}">{{ u.role }}</span></td>
+            <td class="text-end">
+              {% if u.username != 'admin' %}
+              <form method="post" action="{{ url_for('admin_users_delete', user_id=u.id) }}" onsubmit="return confirm('Delete user?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-secondary">No staff users yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

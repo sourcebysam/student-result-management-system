@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Home • Student Result Manager{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h4 class="card-title"><i class="fa-solid fa-user-graduate text-primary"></i> Students</h4>
+        <p class="text-secondary mb-4">Check your published results securely with your Registration Number and password.</p>
+        <a href="{{ url_for('student_login') }}" class="btn btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Student Login</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h4 class="card-title"><i class="fa-solid fa-shield-halved text-danger"></i> Administrators</h4>
+        <p class="text-secondary mb-4">Manage classes, students, subjects, and results. Import/export via CSV.</p>
+        <a href="{{ url_for('admin_login') }}" class="btn btn-danger"><i class="fa-solid fa-lock"></i> Admin Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
