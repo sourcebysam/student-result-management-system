@@ -1,3 +1,13 @@
+
+👨‍💻 About Me
+Hi! I'm Samarth Gowda, a passionate BCA student who loves building impactful software solutions.
+This project was created to showcase my skills in Python, Web Development, and Database Management.
+I enjoy working on real-world applications and learning new technologies.
+
+📧 Email: samarthgowda757@gmail.com
+💼 LinkedIn: https://www.linkedin.com/in/samarth-gowda-472359335?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
+💻 GitHub: github.com/sourcebysam
+
 # 🎓 Student Result Management System
 
 A complete **web-based Student Result Management System** built using **Python (Flask)**, **HTML/CSS**, and **Bootstrap**.  
